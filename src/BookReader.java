@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -10,7 +12,6 @@ import java.util.ArrayList;
 public class BookReader {
 	private ArrayList<Letter> letters = new ArrayList<>();
 	private FileReader bookFile;
-	private ReaderUtility utils;
 	/**
 	 * This is the constructor. It takes in the file name for the
 	 * book, parses the text, and then builds
@@ -20,15 +21,16 @@ public class BookReader {
 	public BookReader(String file) {
 		bookFile = new FileReader(file);
 		ArrayList<String> rawData = bookFile.getLines();
-		utils = new ReaderUtility();
 
 		for (int i = 0; i < rawData.size(); i++) {
 			String line = rawData.get(i);
-			
-			//Create Letter object
-			Letter letter = new Letter();
-			//add to letters AL
-			letters.add(letter);
+			Matcher matcher = Pattern.compile(".").matcher(line);
+			if (matcher.matches()) {
+				for (int j = 0; j <= matcher.groupCount(); j++) {
+					Letter letter = new Letter(matcher.group(j));
+					letters.add(letter);
+				}
+			}
 		}
 	}
 	/**
