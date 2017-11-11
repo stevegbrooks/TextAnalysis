@@ -21,14 +21,15 @@ public class BookReader {
 	public BookReader(String file) {
 		bookFile = new FileReader(file);
 		ArrayList<String> rawData = bookFile.getLines();
-
+		
+		//fill letters array
 		for (int i = 0; i < rawData.size(); i++) {
 			String line = rawData.get(i);
-			Matcher matcher = Pattern.compile(".").matcher(line);
-			if (matcher.matches()) {
+			Matcher matcher = Pattern.compile("[a-zA-Z]{1}").matcher(line);
+			while (matcher.find()) {
 				for (int j = 0; j <= matcher.groupCount(); j++) {
-					Letter letter = new Letter(matcher.group(j));
-					letters.add(letter);
+					Letter word = new Letter(matcher.group(j));
+					letters.add(word);
 				}
 			}
 		}
