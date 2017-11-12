@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
  */
 public class BookReader {
 	private ArrayList<Letter> letters = new ArrayList<>();
+	private ArrayList<Word> words = new ArrayList<>();
 	private FileReader bookFile;
 	/**
 	 * This is the constructor. It takes in the file name for the
@@ -28,11 +29,49 @@ public class BookReader {
 			Matcher matcher = Pattern.compile("[a-zA-Z]{1}").matcher(line);
 			while (matcher.find()) {
 				for (int j = 0; j <= matcher.groupCount(); j++) {
-					Letter word = new Letter(matcher.group(j));
-					letters.add(word);
+					Letter letter = new Letter(matcher.group(j));
+					letters.add(letter);
 				}
 			}
 		}
+		//fill word array
+		for (int i = 0; i < rawData.size(); i++) {
+			String line = rawData.get(i);
+			Matcher matcher = Pattern.compile("[a-zA-Z\\']+").matcher(line);
+			while (matcher.find()) {
+				String inputUpperCase = matcher.group(0).toUpperCase();
+				inputUpperCase = removePosessive(inputUpperCase);
+				inputUpperCase = removeSingleQuotation(inputUpperCase);
+				if (inputUpperCase.length() > 1
+						&& (inputUpperCase.contains("A")
+						|| inputUpperCase.contains("E")
+						|| inputUpperCase.contains("I")
+						|| inputUpperCase.contains("O")
+						|| inputUpperCase.contains("U")
+						|| inputUpperCase.contains("Y"))) {
+					Word word = new Word(inputUpperCase);
+					words.add(word);
+				} else if (inputUpperCase.length() == 1
+						&& (inputUpperCase.equals("A") ||
+							inputUpperCase.equals("I") ||
+							inputUpperCase.equals("O"))) {
+					Word word = new Word(inputUpperCase);
+					words.add(word);
+				}
+			}
+		}
+	}
+	public String removePosessive(String line) {
+		if (line.contains("'S")) {
+			line = line.replace("'S", "");
+		}
+		return line;
+	}
+	public String removeSingleQuotation(String line) {
+		if (line.contains("'")) {
+			line = line.replace("'", "");
+		}
+		return line;
 	}
 	/**
 	 * Return the letters ArrayList
@@ -41,6 +80,14 @@ public class BookReader {
 	public ArrayList<Letter> getLettersArray() {
 		return letters;
 	}
+	/**
+	 * Return the words ArrayList
+	 * @return the arraylist of words
+	 */
+	public ArrayList<Word> getWordsArray() {
+		return words;
+	}
+	
 }
 
 
