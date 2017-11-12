@@ -28,7 +28,7 @@ public class FileReader {
 	private void readFile() {
 		try {
 			File inputFile = new File(filename);
-			Scanner in = new Scanner(inputFile);
+			Scanner in = new Scanner(inputFile, "utf-8");
 			
 			while (in.hasNextLine()) {
 				String line = in.nextLine();

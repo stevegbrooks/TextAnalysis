@@ -37,6 +37,7 @@ public class BookReader {
 		//fill word array
 		for (int i = 0; i < rawData.size(); i++) {
 			String line = rawData.get(i);
+			line = removeWeirdCharacters(line);
 			Matcher matcher = Pattern.compile("[a-zA-Z\\']+").matcher(line);
 			while (matcher.find()) {
 				String inputUpperCase = matcher.group(0).toUpperCase();
@@ -70,6 +71,12 @@ public class BookReader {
 	public String removeSingleQuotation(String line) {
 		if (line.contains("'")) {
 			line = line.replace("'", "");
+		}
+		return line;
+	}
+	public String removeWeirdCharacters(String line) {
+		if (line.contains("††††")) {
+			line = line.replace("††††", "");
 		}
 		return line;
 	}
