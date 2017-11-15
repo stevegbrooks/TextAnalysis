@@ -10,6 +10,8 @@ public class FileReader {
 	
 	private String filename;
 	private ArrayList<String> lines;
+	private ArrayList<String> quotes;
+	private StringBuilder wholeBook;
 	
 	/**
 	 * The constructor
@@ -18,7 +20,10 @@ public class FileReader {
 	public FileReader(String file) {
 		filename = file;
 		lines = new ArrayList<String>();
+		quotes = new ArrayList<String>();
+		wholeBook = new StringBuilder();
 		readFile();
+		readEntire();
 	}
 
 	/**
@@ -42,12 +47,22 @@ public class FileReader {
 		}
 	}
 	
+	private void readEntire() {
+		readFile();
+		for (String line : lines) {
+			wholeBook.append(line + " ");
+		}
+	}
+	
 	/**
 	 * The accessor method for lines
  	 * @return the lines arraylist
 	 */
 	public ArrayList<String> getLines() {
 		return lines;
+	}
+	public StringBuilder getWholeBook() {
+		return wholeBook;
 	}
 
 }

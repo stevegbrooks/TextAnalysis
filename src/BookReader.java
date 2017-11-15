@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 public class BookReader {
 	private ArrayList<Letter> letters = new ArrayList<>();
 	private ArrayList<Word> words = new ArrayList<>();
+	private ArrayList<Quote> quotes = new ArrayList<>();
 	private FileReader bookFile;
 	/**
 	 * This is the constructor. It takes in the file name for the
@@ -22,6 +23,7 @@ public class BookReader {
 	public BookReader(String file) {
 		bookFile = new FileReader(file);
 		ArrayList<String> rawData = bookFile.getLines();
+		StringBuilder wholeBook = bookFile.getWholeBook();
 		
 		//fill letters array
 		for (int i = 0; i < rawData.size(); i++) {
@@ -37,7 +39,6 @@ public class BookReader {
 		//fill word array
 		for (int i = 0; i < rawData.size(); i++) {
 			String line = rawData.get(i);
-			line = removeWeirdCharacters(line);
 			Matcher matcher = Pattern.compile("[a-zA-Z\\']+").matcher(line);
 			while (matcher.find()) {
 				String inputUpperCase = matcher.group(0).toUpperCase();
@@ -61,6 +62,19 @@ public class BookReader {
 				}
 			}
 		}
+		//fill quotes array
+		Matcher doubleQMatcher = Pattern.compile("\\\"([^\"]+)\\\"").matcher(wholeBook);
+		while (doubleQMatcher.find()) {
+			String input = doubleQMatcher.group();
+			Quote quote = new Quote(input);
+			quotes.add(quote);
+		}
+		Matcher singleQMatcher = Pattern.compile("(?<![\\w])\\'([^\\']+)(?=[\\.\\!\\'])\\'(?=[\\s])").matcher(wholeBook);
+		while (singleQMatcher.find()) {
+			String input = singleQMatcher.group();
+			Quote quote = new Quote(input);
+			quotes.add(quote);
+		}
 	}
 	public String removePosessive(String line) {
 		if (line.contains("'S")) {
@@ -74,12 +88,11 @@ public class BookReader {
 		}
 		return line;
 	}
-	public String removeWeirdCharacters(String line) {
-		if (line.contains("††††")) {
-			line = line.replace("††††", "");
-		}
-		return line;
-	}
+//	public String removeInnards(String line) {
+//		if (line.charAt(0).equals("'")) {
+//			//delimit by (?![$\'])([\s][\w\s]+[\s])(?=[$\'])
+//		}
+//	}
 	/**
 	 * Return the letters ArrayList
 	 * @return the arraylist of letters
@@ -93,6 +106,9 @@ public class BookReader {
 	 */
 	public ArrayList<Word> getWordsArray() {
 		return words;
+	}
+	public ArrayList<Quote> getQuotesArray() {
+		return quotes;
 	}
 	
 }
