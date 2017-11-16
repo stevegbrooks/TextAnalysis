@@ -68,26 +68,16 @@ public class BookReader {
 			String input = doubleQMatcher.group();
 			if (!input.startsWith("\" ") && !input.endsWith(" \"")
 					&& !input.startsWith("\";")) {
-				input = input.replaceAll("       ", " ");
-				input = input.replaceAll("      ", " ");
-				input = input.replaceAll("     ", " ");
-				input = input.replaceAll("    ", " ");
-				input = input.replaceAll("   ", " ");
-				input = input.replaceAll("  ", " ");
+				input = input.replaceAll("[\\s]+", " ");
 				input = input.trim();
 				Quote quote = new Quote(input);
 				quotes.add(quote);
 			}
 		}
-		Matcher singleQMatcher = Pattern.compile("(?:^|\\s)'([^']*?)'(?:\\s|$)", Pattern.MULTILINE).matcher(wholeBook);
+		Matcher singleQMatcher = Pattern.compile("(?:^|\\s)[\\']([^']*?)[\\'](?:\\s|$)", Pattern.MULTILINE).matcher(wholeBook);
 		while (singleQMatcher.find()) {
 			String input = singleQMatcher.group();
-			input = input.replaceAll("       ", " ");
-			input = input.replaceAll("      ", " ");
-			input = input.replaceAll("     ", " ");
-			input = input.replaceAll("    ", " ");
-			input = input.replaceAll("   ", " ");
-			input = input.replaceAll("  ", " ");
+			input = input.replaceAll("[\\s]+", " ");
 			input = input.trim();
 			Quote quote = new Quote(input);
 			quotes.add(quote);
@@ -105,11 +95,6 @@ public class BookReader {
 		}
 		return line;
 	}
-//	public String removeInnards(String line) {
-//		if (line.charAt(0).equals("'")) {
-//			//delimit by (?![$\'])([\s][\w\s]+[\s])(?=[$\'])
-//		}
-//	}
 	/**
 	 * Return the letters ArrayList
 	 * @return the arraylist of letters
