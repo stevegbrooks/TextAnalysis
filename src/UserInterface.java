@@ -1,9 +1,4 @@
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class UserInterface {
 
@@ -15,24 +10,27 @@ public class UserInterface {
 				"my-man-jeeves.txt", "pride-prejudice.txt",
 				"tale-of-two-cities.txt", "tom-sawyer.txt"};
 
-//		for (String element : bookList) {
-		BookReader book = new BookReader(bookList[0]);
+		for (String element : bookList) {
+		BookReader book = new BookReader(element);
 		ArrayList<Letter> bookLetters = book.getLettersArray();
 		ArrayList<Word> bookWords = book.getWordsArray();
 		ArrayList<Quote> bookQuotes = book.getQuotesArray();
-		TextAnalysis textAnalysis = new TextAnalysis(bookLetters, bookWords);
+		TextAnalysis textAnalysis = new TextAnalysis(bookLetters, bookWords, bookQuotes);
 		
-//		System.out.println(element);
-//		System.out.println("===============================");
-//		textAnalysis.rankTopLetters(10);
-//		System.out.println("===============================");
-//		textAnalysis.rankTopWords(10);
-//		System.out.println("===============================");
-//		textAnalysis.rankTopWordsWithStopList(10);
-//		System.out.println("===============================");
-//		}
-		for (int i = 0; i < bookQuotes.size(); i++) {
-			System.out.println(bookQuotes.get(i).getQuote());
+		System.out.println("Textual Analysis of: " + element);
+		System.out.println("====================================");
+		System.out.println("Top Letters in Terms of Frequency");
+		textAnalysis.rankTopLetters(10);
+		System.out.println("====================================");
+		System.out.println("Top Words in Terms of Frequency");
+		textAnalysis.rankTopWords(10);
+		System.out.println("====================================");
+		System.out.println("Top non-StopList Words in Terms of Frequency");
+		textAnalysis.rankTopWordsWithStopList(10);
+		System.out.println("====================================");
+		System.out.println("Top Quotes in Terms of Length");
+		textAnalysis.rankTopNLongestQuotes(10);
+		System.out.println("====================================");
 		}
 	}
 }

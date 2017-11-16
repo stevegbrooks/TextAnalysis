@@ -48,9 +48,8 @@ public class FileReader {
 	}
 	
 	private void readEntire() {
-		readFile();
-		for (String line : lines) {
-			wholeBook.append(line + " ");
+		for (String element : lines) {
+			wholeBook.append(element + " ");
 		}
 	}
 	

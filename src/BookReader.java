@@ -24,7 +24,7 @@ public class BookReader {
 		bookFile = new FileReader(file);
 		ArrayList<String> rawData = bookFile.getLines();
 		StringBuilder wholeBook = bookFile.getWholeBook();
-		
+
 		//fill letters array
 		for (int i = 0; i < rawData.size(); i++) {
 			String line = rawData.get(i);
@@ -46,32 +46,49 @@ public class BookReader {
 				inputUpperCase = removeSingleQuotation(inputUpperCase);
 				if (inputUpperCase.length() > 1
 						&& (inputUpperCase.contains("A")
-						|| inputUpperCase.contains("E")
-						|| inputUpperCase.contains("I")
-						|| inputUpperCase.contains("O")
-						|| inputUpperCase.contains("U")
-						|| inputUpperCase.contains("Y"))) {
+								|| inputUpperCase.contains("E")
+								|| inputUpperCase.contains("I")
+								|| inputUpperCase.contains("O")
+								|| inputUpperCase.contains("U")
+								|| inputUpperCase.contains("Y"))) {
 					Word word = new Word(inputUpperCase);
 					words.add(word);
 				} else if (inputUpperCase.length() == 1
 						&& (inputUpperCase.equals("A") ||
-							inputUpperCase.equals("I") ||
-							inputUpperCase.equals("O"))) {
+								inputUpperCase.equals("I") ||
+								inputUpperCase.equals("O"))) {
 					Word word = new Word(inputUpperCase);
 					words.add(word);
 				}
 			}
 		}
 		//fill quotes array
-		Matcher doubleQMatcher = Pattern.compile("\\\"([^\"]+)\\\"").matcher(wholeBook);
+		Matcher doubleQMatcher = Pattern.compile("[\\\"]([^\\\"]+?)[\\\"]").matcher(wholeBook);
 		while (doubleQMatcher.find()) {
 			String input = doubleQMatcher.group();
-			Quote quote = new Quote(input);
-			quotes.add(quote);
+			if (!input.startsWith("\" ") && !input.endsWith(" \"")
+					&& !input.startsWith("\";")) {
+				input = input.replaceAll("       ", " ");
+				input = input.replaceAll("      ", " ");
+				input = input.replaceAll("     ", " ");
+				input = input.replaceAll("    ", " ");
+				input = input.replaceAll("   ", " ");
+				input = input.replaceAll("  ", " ");
+				input = input.trim();
+				Quote quote = new Quote(input);
+				quotes.add(quote);
+			}
 		}
-		Matcher singleQMatcher = Pattern.compile("(?<![\\w])\\'([^\\']+)(?=[\\.\\!\\'])\\'(?=[\\s])").matcher(wholeBook);
+		Matcher singleQMatcher = Pattern.compile("(?:^|\\s)'([^']*?)'(?:\\s|$)", Pattern.MULTILINE).matcher(wholeBook);
 		while (singleQMatcher.find()) {
 			String input = singleQMatcher.group();
+			input = input.replaceAll("       ", " ");
+			input = input.replaceAll("      ", " ");
+			input = input.replaceAll("     ", " ");
+			input = input.replaceAll("    ", " ");
+			input = input.replaceAll("   ", " ");
+			input = input.replaceAll("  ", " ");
+			input = input.trim();
 			Quote quote = new Quote(input);
 			quotes.add(quote);
 		}

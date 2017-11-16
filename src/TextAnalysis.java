@@ -10,12 +10,14 @@ import java.util.HashMap;
 public class TextAnalysis {
 	private ArrayList<Letter> letters;
 	private ArrayList<Word> words;
+	private ArrayList<Quote> quotes;
 	private BookReader stopList;
 	private ArrayList<Word> stopListWords;
 	
-	public TextAnalysis(ArrayList<Letter> letters, ArrayList<Word> words) {
+	public TextAnalysis(ArrayList<Letter> letters, ArrayList<Word> words, ArrayList<Quote> quotes) {
 		this.letters = letters;
 		this.words = words;
+		this.quotes = quotes;
 		stopList = new BookReader("stop-list.txt");
 		stopListWords = stopList.getWordsArray();
 	}
@@ -68,6 +70,28 @@ public class TextAnalysis {
 		wordsCount = calculateFreqFromWords(words);
 		printTopNbyFreq(wordsCount, n);
 	}
+	
+	public void rankTopNLongestQuotes(int n) {
+		Integer largestLength = 0;
+		Integer lastLength = 0;
+		Quote largestQuote = null;
+		Quote lastQuote = null;
+		for (int j = 0; j < n; j++) {
+			for (int i = 0; i < quotes.size(); i++) {
+				lastQuote = quotes.get(i);
+				lastLength = lastQuote.getQuote().length();
+				if (lastLength > largestLength) {
+					largestLength = lastLength;
+					largestQuote = lastQuote;
+				}
+			}
+			System.out.println((j+1) + ". " + largestQuote.getQuote() 
+				+ " : " + largestLength);
+			quotes.remove(largestQuote);
+			largestLength = 0;
+			lastLength = 0;
+		}
+	}
 	/**
 	 * This method creates a HashMap where the key are words
 	 * and the values are how many times that word appears in the
@@ -108,7 +132,7 @@ public class TextAnalysis {
 					largestKey = lastKey;
 				}
 			}
-			System.out.println(largestKey + " : " + largestValue);
+			System.out.println((i+1) + ". " + largestKey + " : " + largestValue);
 			hashmap.remove(largestKey);
 			largestValue = 0;
 			lastValue = 0;
