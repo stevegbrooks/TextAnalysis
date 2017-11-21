@@ -1,9 +1,12 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 /**
  * This class will do text analysis on the books 
- * read in by BookReader.
+ * read in by BookReader. It receives support 
+ * from the TextAnalysisUtility class.
+ * 
  * @author sgb
  *
  */
@@ -13,13 +16,26 @@ public class TextAnalysis {
 	private ArrayList<Quote> quotes;
 	private BookReader stopList;
 	private ArrayList<Word> stopListWords;
+	private TextAnalysisUtility utils;
 	
-	public TextAnalysis(ArrayList<Letter> letters, ArrayList<Word> words, ArrayList<Quote> quotes) {
+	/**
+	 * The constructor allows one to run textual analyses on
+	 * an ArrayList of type Letter, Word, and Quote.
+	 * 
+	 * @param letters an ArrayList of type Letter
+	 * @param words an ArrayList of type Word
+	 * @param quotes an ArrayList of type Quote
+	 */
+	public TextAnalysis(ArrayList<Letter> letters, 
+			ArrayList<Word> words, ArrayList<Quote> quotes) {
+		
 		this.letters = letters;
 		this.words = words;
 		this.quotes = quotes;
+		
 		stopList = new BookReader("stop-list.txt");
 		stopListWords = stopList.getWordsArray();
+		utils = new TextAnalysisUtility();
 	}
 	/**
 	 * this method computes the frequency of each letter
@@ -27,11 +43,13 @@ public class TextAnalysis {
 	 */
 	public void rankTopLetters(int n) {
 		HashMap<String,Integer> lettersCount = new HashMap<>();
-		String[] alphabet = getAlphabet();
+		String[] alphabet = utils.getAlphabet();
+		//check through the alphabet array
 		for (int i = 0; i < alphabet.length; i++) {
 			for (int j = 0; j < letters.size(); j++) {
 				if (letters.get(j).getLetter().toString()
 						.equalsIgnoreCase(alphabet[i])) {
+					//fill hashmap with letter frequency
 					if (lettersCount.containsKey(alphabet[i])) {
 						lettersCount.put(alphabet[i], 
 								lettersCount.get(alphabet[i]) + 1);
@@ -41,7 +59,7 @@ public class TextAnalysis {
 				}
 			}
 		}
-		printTopNbyFreq(lettersCount, n);
+		utils.printTopNbyFreq(lettersCount, n);
 	}
 	/**
 	 * this method computes the frequency of each word
@@ -49,8 +67,8 @@ public class TextAnalysis {
 	 */
 	public void rankTopWords(int n) {
 		HashMap<String,Integer> wordsCount = new HashMap<>();
-		wordsCount = calculateFreqFromWords(words);
-		printTopNbyFreq(wordsCount, n);
+		wordsCount = utils.countWords(words);
+		utils.printTopNbyFreq(wordsCount, n);
 	}
 	/**
 	 * this method computes the frequency of each word,
@@ -60,6 +78,8 @@ public class TextAnalysis {
 	 */
 	public void rankTopWordsWithStopList(int n) {
 		HashMap<String,Integer> wordsCount = new HashMap<>();
+		
+		//check against stop-list array
 		for (int i = 0; i < stopListWords.size(); i++) {
 			for (int j = 0; j < words.size(); j++) {
 				if (words.get(j).getWord().equals(stopListWords.get(i).getWord())) {
@@ -67,15 +87,22 @@ public class TextAnalysis {
 				}
 			}
 		}
-		wordsCount = calculateFreqFromWords(words);
-		printTopNbyFreq(wordsCount, n);
+		
+		wordsCount = utils.countWords(words);
+		utils.printTopNbyFreq(wordsCount, n);
 	}
-	
+	/**
+	 * This method iteratively pulls the largest Quote by length
+	 * from the ArrayList, prints it, and then removes it. 
+	 * This will get done n times based on the integer passed to it.
+	 * @param n an integer for the desired number of ranks.
+	 */
 	public void rankTopNLongestQuotes(int n) {
 		Integer largestLength = 0;
 		Integer lastLength = 0;
 		Quote largestQuote = null;
 		Quote lastQuote = null;
+		
 		for (int j = 0; j < n; j++) {
 			for (int i = 0; i < quotes.size(); i++) {
 				lastQuote = quotes.get(i);
@@ -85,70 +112,41 @@ public class TextAnalysis {
 					largestQuote = lastQuote;
 				}
 			}
-			System.out.println((j+1) + ". " + largestQuote.getQuote() 
-				+ " : " + largestLength);
+			System.out.println((j+1) + ". " 
+					+ largestQuote.getQuote() 
+					+ " : " + largestLength);
 			quotes.remove(largestQuote);
 			largestLength = 0;
 			lastLength = 0;
 		}
 	}
 	/**
-	 * This method creates a HashMap where the key are words
-	 * and the values are how many times that word appears in the
-	 * provided ArrayList of type Word.
-	 * @param stringArray an ArrayList of type Word
-	 * @return a HashMap with frequencies
+	 * This method is in response to Q5. It will take each 
+	 * Word, scramble its letters, and then add it to a new
+	 * ArrayList of type StringBuilder.
+	 * @return arraylist of type StringBuilder
 	 */
-	private HashMap<String,Integer> calculateFreqFromWords(ArrayList<Word> stringArray) {
-		HashMap<String,Integer> wordsCount = new HashMap<>();
-		for (int i = 0; i < stringArray.size(); i++) {
-			if (wordsCount.containsKey(stringArray.get(i).getWord())) {
-				wordsCount.put(stringArray.get(i).getWord(), 
-						wordsCount.get(stringArray.get(i).getWord()) + 1);
-			} else {
-				wordsCount.put(stringArray.get(i).getWord(), 1);
+	public ArrayList<StringBuilder> wordScrambler() {
+		ArrayList<StringBuilder> scrambledWords = new ArrayList<>();
+		Random rand = new Random();
+		
+		for (int i = 0; i < words.size(); i++) {
+			StringBuilder scrambledWord = new StringBuilder();
+			StringBuilder wordToScramble = new StringBuilder();
+			wordToScramble = wordToScramble.append(words.get(i).getWord());
+			char[] scrambledChars = new char[wordToScramble.length()];
+			
+			for (int j = 0; j < scrambledChars.length; j++) {
+				int replacementIndex = rand.nextInt(wordToScramble.length());
+				char replacementChar = wordToScramble.charAt(replacementIndex);
+				wordToScramble = wordToScramble.deleteCharAt(replacementIndex);
+				scrambledChars[j] = replacementChar;
 			}
-		}
-		return wordsCount;
-	}
-	/**
-	 * This method prints the n highest frequency words/letters 
-	 * in a HashMap
-	 * @param hashmap a HashMap of words/letters and their frequencies
-	 * @param numberOfRanks the desired number of ranks
-	 */
-	private void printTopNbyFreq(HashMap<String,Integer> hashmap, int numberOfRanks) {
-		Integer largestValue = 0;
-		Integer lastValue = null;
-		String largestKey = null;
-		String lastKey = null;
-
-		for (int i = 0; i < numberOfRanks; i++) {
-			for (String key : hashmap.keySet()) {
-				lastValue = hashmap.get(key);
-				lastKey = key;
-				if (lastValue > largestValue) {
-					largestValue = lastValue;
-					largestKey = lastKey;
-				}
+			for (char element : scrambledChars) {
+				scrambledWord.append(element); 
 			}
-			System.out.println((i+1) + ". " + largestKey + " : " + largestValue);
-			hashmap.remove(largestKey);
-			largestValue = 0;
-			lastValue = 0;
+			scrambledWords.add(scrambledWord);
 		}
-	}
-	/**
-	 * This method returns a string array 
-	 * of the letters in the English alphabet in caps
-	 * @return string array of the 26 letters 
-	 */
-	private String[] getAlphabet() {
-		String[] alphabet = {"A", "B", "C", "D", 
-				"E", "F", "G", "H", "I", "G", "K", 
-				"L", "M", "N", "O", "P", "Q", "R", 
-				"S", "T", "U", "V", "W", "X", "Y", 
-				"Z"};	
-		return alphabet;
+		return scrambledWords;
 	}
 }

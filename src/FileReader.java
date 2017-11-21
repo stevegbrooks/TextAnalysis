@@ -10,7 +10,6 @@ public class FileReader {
 	
 	private String filename;
 	private ArrayList<String> lines;
-	private ArrayList<String> quotes;
 	private StringBuilder wholeBook;
 	
 	/**
@@ -20,7 +19,6 @@ public class FileReader {
 	public FileReader(String file) {
 		filename = file;
 		lines = new ArrayList<String>();
-		quotes = new ArrayList<String>();
 		wholeBook = new StringBuilder();
 		readFile();
 		readEntire();
@@ -46,7 +44,10 @@ public class FileReader {
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * This method reads in the entire file 
+	 * to a single line of StringBuilder text.
+	 */
 	private void readEntire() {
 		for (String element : lines) {
 			wholeBook.append(element + " ");

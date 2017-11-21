@@ -1,8 +1,18 @@
-
+/**
+ * This class is simply to store information about 
+ * each word in the book, including the word itself
+ * and its frequency as it appears in the book.
+ * @author sgb
+ *
+ */
 public class Word {
 	private String word;
 	private int freq;
 	
+	/**
+	 * Constructor class to create a word object.
+	 * @param word the word to store
+	 */
 	public Word(String word) {
 		this.word = word;
 	}

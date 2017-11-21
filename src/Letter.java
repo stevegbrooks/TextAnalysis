@@ -1,9 +1,16 @@
-
+/**
+ * This class can hold letter characters
+ * as String and their frequency in a text.
+ * @author sgb
+ *
+ */
 public class Letter {
 	private String letter;
 	private double freq;
-
-
+	/**
+	 * The constructor takes in a String
+	 * @param letter
+	 */
 	public Letter(String letter) {
 		this.letter = letter;
 	}
