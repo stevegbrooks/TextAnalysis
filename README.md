@@ -28,9 +28,9 @@ The regex to actually find a quote was really where the work was. It was only af
 
 I dont think that my ArrayList<Quote> has the correct number of quotes based on the .txt file its reading, but i do think it reliably prints out the top N quotes in terms of character length without any false positives/false negatives.
 
-## 5. Wildcard
+## 5. Scramble Letters
 
-I chose to do something that doesn't have a lot of utility, but I thought would be an interesting project - randomize the letters in each word without replacement, such that each original letter is in a random position, and no original letters are repeated. I wanted to do this because of that thing where people can read text even if its scrambled - they can pick up context and fill in the gaps when a word's letters are randomized. It turns out that it's true, they really can!
+I chose to do something that doesn't have a lot of utility here, but I thought would be an interesting project - randomize the letters in each word without replacement, such that each original letter is in a random position, and no original letters are repeated. I wanted to do this because of that thing where people can read text even if its scrambled - they can pick up context and fill in the gaps when a word's letters are randomized. It turns out that it's true, they really can!
 
 
 
