@@ -3,6 +3,7 @@ import java.util.HashMap;
 /**
  * This class lends support to the TextAnalysis class
  * to carry out its analyses.
+ * 
  * @author sgb
  *
  */
@@ -14,43 +15,63 @@ public class TextAnalysisUtility {
 	 * @param stringArray an ArrayList of type Word
 	 * @return a HashMap with frequencies
 	 */
-	public HashMap<String,Integer> countWords(ArrayList<Word> stringArray) {
+	public static HashMap<String,Integer> countWords(ArrayList<Word> stringArray) {
 		HashMap<String,Integer> wordsCount = new HashMap<>();
-		for (int i = 0; i < stringArray.size(); i++) {
-			if (wordsCount.containsKey(stringArray.get(i).getWord())) {
-				wordsCount.put(stringArray.get(i).getWord(), 
-						wordsCount.get(stringArray.get(i).getWord()) + 1);
+		for (Word word : stringArray) {
+			if (wordsCount.containsKey(word.getWord())) {
+				wordsCount.put(word.getWord(), 
+						wordsCount.get(word.getWord()) + 1);
 			} else {
-				wordsCount.put(stringArray.get(i).getWord(), 1);
+				wordsCount.put(word.getWord(), 1);
 			}
 		}
 		return wordsCount;
 	}
+	
+	public static HashMap<String,Integer> countLetters(ArrayList<Letter> stringArray) {
+		HashMap<String,Integer> lettersCount = new HashMap<>();
+		for (Letter letter : stringArray) {
+			if (lettersCount.containsKey(letter.getLetter())) {
+				lettersCount.put(letter.getLetter(), 
+						lettersCount.get(letter.getLetter()) + 1);
+			} else {
+				lettersCount.put(letter.getLetter(), 1);
+			}
+		}
+		return lettersCount;
+	}
 	/**
 	 * This method prints the n highest frequency words/letters 
 	 * in a HashMap
+	 * 
 	 * @param hashmap a HashMap of words/letters and their frequencies
 	 * @param numberOfRanks the desired number of ranks
 	 */
-	public void printTopNbyFreq(HashMap<String,Integer> hashmap, int numberOfRanks) {
-		Integer largestValue = 0;
-		Integer lastValue = null;
-		String largestKey = null;
-		String lastKey = null;
+	public static void printTopNbyFreq(HashMap<String,Integer> hashmap, int numberOfRanks) {
+		if (hashmap.size() >= numberOfRanks) {
+			Integer largestValue = 0;
+			Integer lastValue = null;
+			String largestKey = null;
+			String lastKey = null;
 
-		for (int i = 0; i < numberOfRanks; i++) {
-			for (String key : hashmap.keySet()) {
-				lastValue = hashmap.get(key);
-				lastKey = key;
-				if (lastValue > largestValue) {
-					largestValue = lastValue;
-					largestKey = lastKey;
+			for (int i = 0; i < numberOfRanks; i++) {
+				for (String key : hashmap.keySet()) {
+					lastValue = hashmap.get(key);
+					lastKey = key;
+					if (lastValue > largestValue) {
+						largestValue = lastValue;
+						largestKey = lastKey;
+					}
 				}
+				System.out.println((i+1) + ". " + largestKey 
+						+ " : " + largestValue);
+				hashmap.remove(largestKey);
+				largestValue = 0;
+				lastValue = 0;
 			}
-			System.out.println((i+1) + ". " + largestKey + " : " + largestValue);
-			hashmap.remove(largestKey);
-			largestValue = 0;
-			lastValue = 0;
+		} else {
+			throw new IllegalArgumentException("Number of ranks exceeds "
+					+ "number of elements in data set");
 		}
 	}
 	/**
@@ -58,7 +79,7 @@ public class TextAnalysisUtility {
 	 * of the letters in the English alphabet in caps
 	 * @return string array of the 26 letters 
 	 */
-	public String[] getAlphabet() {
+	public static String[] getAlphabet() {
 		String[] alphabet = {"A", "B", "C", "D", 
 				"E", "F", "G", "H", "I", "G", "K", 
 				"L", "M", "N", "O", "P", "Q", "R", 

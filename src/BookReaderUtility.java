@@ -15,7 +15,7 @@ public class BookReaderUtility {
 	 * @param line a line of text
 	 * @return a line of text without possessives
 	 */
-	public String removePosessive(String line) {
+	public static String removePosessive(String line) {
 		if (line.contains("'S")) {
 			line = line.replace("'S", "");
 		}
@@ -26,7 +26,7 @@ public class BookReaderUtility {
 	 * @param line a line of text
 	 * @return the same line without any single quotation marks
 	 */
-	public String removeSingleQuotation(String line) {
+	public static String removeSingleQuotation(String line) {
 		if (line.contains("'")) {
 			line = line.replace("'", "");
 		}

@@ -32,33 +32,58 @@ public class TextAnalysis {
 		this.letters = letters;
 		this.words = words;
 		this.quotes = quotes;
+		utils = new TextAnalysisUtility();
+	}
+	/**
+	 * The second constructor allows one to run textual analysis on
+	 * an ArrayList of type Letter, Word, and Quote and also
+	 * include a stop list for more interesting results.
+	 * 
+	 * @param letters an ArrayList of type Letter
+	 * @param words an ArrayList of type Word
+	 * @param quotes an ArrayList of type Quote
+	 * @param stopListFileName a String matching the 
+	 * file name of the stop list
+	 */
+	public TextAnalysis(ArrayList<Letter> letters, 
+			ArrayList<Word> words, ArrayList<Quote> quotes,
+			String stopListFileName) {
 		
-		stopList = new BookReader("stop-list.txt");
-		stopListWords = stopList.getWordsArray();
+		this.letters = letters;
+		this.words = words;
+		this.quotes = quotes;
+		stopList = new BookReader(stopListFileName);
+		stopListWords = stopList.getWords();
 		utils = new TextAnalysisUtility();
 	}
 	/**
 	 * this method computes the frequency of each letter
 	 * and prints the top 10 letters by frequency
+	 * 
+	 * TODO don't make it the resp of this method to make sure 
+	 * its a letter, just make the letters array not have other things
 	 */
 	public void rankTopLetters(int n) {
 		HashMap<String,Integer> lettersCount = new HashMap<>();
-		String[] alphabet = utils.getAlphabet();
-		//check through the alphabet array
-		for (int i = 0; i < alphabet.length; i++) {
-			for (int j = 0; j < letters.size(); j++) {
-				if (letters.get(j).getLetter().toString()
-						.equalsIgnoreCase(alphabet[i])) {
-					//fill hashmap with letter frequency
-					if (lettersCount.containsKey(alphabet[i])) {
-						lettersCount.put(alphabet[i], 
-								lettersCount.get(alphabet[i]) + 1);
-					} else {
-						lettersCount.put(alphabet[i], 1);
-					}
-				}
-			}
-		}
+		//TODO make these methods accessed in a static way
+		lettersCount = utils.countLetters(letters);
+//		String[] alphabet = utils.getAlphabet();
+//		//check through the alphabet array
+//		for (int i = 0; i < alphabet.length; i++) {
+//			for (int j = 0; j < letters.size(); j++) {
+//				if (letters.get(j).getLetter().toString()
+//						.equalsIgnoreCase(alphabet[i])) {
+//					//fill hashmap with letter frequency
+//					if (lettersCount.containsKey(alphabet[i])) {
+//						lettersCount.put(alphabet[i], 
+//								lettersCount.get(alphabet[i]) + 1);
+//					} else {
+//						lettersCount.put(alphabet[i], 1);
+//					}
+//				}
+//			}
+//		}
+		//TODO make these methods accessed in a static way
 		utils.printTopNbyFreq(lettersCount, n);
 	}
 	/**
@@ -67,6 +92,7 @@ public class TextAnalysis {
 	 */
 	public void rankTopWords(int n) {
 		HashMap<String,Integer> wordsCount = new HashMap<>();
+		//TODO make these methods accessed in a static way
 		wordsCount = utils.countWords(words);
 		utils.printTopNbyFreq(wordsCount, n);
 	}
@@ -82,12 +108,13 @@ public class TextAnalysis {
 		//check against stop-list array
 		for (int i = 0; i < stopListWords.size(); i++) {
 			for (int j = 0; j < words.size(); j++) {
-				if (words.get(j).getWord().equals(stopListWords.get(i).getWord())) {
+				if (words.get(j).getWord().equals(
+						stopListWords.get(i).getWord())) {
 					words.remove(j);
 				}
 			}
 		}
-		
+		//TODO make these methods accessed in a static way
 		wordsCount = utils.countWords(words);
 		utils.printTopNbyFreq(wordsCount, n);
 	}
@@ -124,29 +151,45 @@ public class TextAnalysis {
 	 * This method is in response to Q5. It will take each 
 	 * Word, scramble its letters, and then add it to a new
 	 * ArrayList of type StringBuilder.
+	 * 
+	 *TODO collections.shuffle
+	 * 
 	 * @return arraylist of type StringBuilder
 	 */
 	public ArrayList<StringBuilder> wordScrambler() {
 		ArrayList<StringBuilder> scrambledWords = new ArrayList<>();
 		Random rand = new Random();
-		
+		//*** for each word in the source file...
 		for (int i = 0; i < words.size(); i++) {
+			//create two SB objects: One to hold the result, 
+			//the other to hold the raw materials.
 			StringBuilder scrambledWord = new StringBuilder();
 			StringBuilder wordToScramble = new StringBuilder();
+			//append raw materials, and create a char array to process
 			wordToScramble = wordToScramble.append(words.get(i).getWord());
 			char[] scrambledChars = new char[wordToScramble.length()];
-			
+			//***for each char in that word, knowing that the char array and the word
+				//are necessarily the same length and the same word...
 			for (int j = 0; j < scrambledChars.length; j++) {
+				
+				//take a random char in the origin word...
 				int replacementIndex = rand.nextInt(wordToScramble.length());
 				char replacementChar = wordToScramble.charAt(replacementIndex);
-				wordToScramble = wordToScramble.deleteCharAt(replacementIndex);
+				
+				//...and put it into the char array
 				scrambledChars[j] = replacementChar;
+					
+				//selection without replacement
+				wordToScramble = wordToScramble.deleteCharAt(replacementIndex);
 			}
+			//after all that's done, create an object for the scrambled word
 			for (char element : scrambledChars) {
 				scrambledWord.append(element); 
 			}
+			//and add it to the array. 
 			scrambledWords.add(scrambledWord);
 		}
+		//***
 		return scrambledWords;
 	}
 }
